@@ -49,6 +49,9 @@ RUN chmod 600 /home/docker/.ssh/authorized_keys
 
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN sed -ri 's/#UsePAM no/UsePAM no/g' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+RUN echo "PermitRootLogin no" >> /etc/ssh/sshd_config
  
 ## Init SSHD
 RUN /etc/init.d/sshd start &&\

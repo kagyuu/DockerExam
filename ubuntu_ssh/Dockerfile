@@ -31,7 +31,14 @@ MAINTAINER Atsushi HONDOH <kagyuu@hondou.homedns.org>
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get install -y openssh-server monit
 
+# Initialize sshd
+RUN /etc/init.d/ssh start && /etc/init.d/ssh stop
+
+# Permit only pubkey access
 RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+RUN echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+
 RUN mkdir -p /var/run/sshd && chmod 755 /var/run/sshd
 
 ## Operator user
