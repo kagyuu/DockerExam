@@ -64,8 +64,7 @@ ADD ssh.conf /etc/monit/conf.d/ssh.conf
 ## Expose ports
 # 22    : ssh
 # 2812  : monit
-EXPOSE 22
-EXPOSE 2812
+EXPOSE 22 2812
  
 ## Execute monit
 CMD ["/usr/bin/monit","-I"]

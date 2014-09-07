@@ -49,9 +49,8 @@ RUN chmod 600 /home/docker/.ssh/authorized_keys
 
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN sed -ri 's/#UsePAM no/UsePAM no/g' /etc/ssh/sshd_config
-RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
-RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
-RUN echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+RUN sed -ri 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+RUN sed -ri 's/#PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
  
 ## Init SSHD
 RUN /etc/init.d/sshd start &&\
@@ -66,8 +65,7 @@ ADD ssh.conf /etc/monit.d/ssh.conf
 ## Expose ports
 ## 22   : ssh
 ## 2812 : monit web console
-EXPOSE 22
-EXPOSE 2812
+EXPOSE 22 2812
  
 ## Execute monit
 CMD ["/usr/bin/monit","-I"]
