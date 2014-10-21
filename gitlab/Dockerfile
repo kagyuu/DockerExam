@@ -120,8 +120,8 @@ RUN usermod -aG redis git
 # We'll install GitLab into home directory of the user "git"
 
 ## Proxy
-RUN git config --global http.proxy http://foo%40bar.com:password@proxy.bar.com:3124/
-RUN git config --global https.proxy http://foo%40bar.com:password@proxy.bar.com:3124/
+# RUN git config --global http.proxy http://foo%40bar.com:password@proxy.bar.com:3124/
+# RUN git config --global https.proxy http://foo%40bar.com:password@proxy.bar.com:3124/
 
 WORKDIR /home/git
 USER git
@@ -182,7 +182,7 @@ RUN git config --global core.autocrlf input
 
 RUN /etc/init.d/postgresql start &&\
  /etc/init.d/redis-server start &&\
- echo "yes" | sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=newpassword &&\
+ echo "yes" | sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=5iveL!fe &&\
  /etc/init.d/redis-server stop &&\
  /etc/init.d/postgresql stop
 
@@ -220,7 +220,7 @@ ADD redis.conf /etc/monit/conf.d/redis.conf
 # 2812  : monit
 # 80 : nginx (gitlab)
 # 22 : ssh
-EXPOSE 22,80,2812
+EXPOSE 22 80 2812
 
 ## Execute monit
 CMD ["/usr/bin/monit","-I"]
