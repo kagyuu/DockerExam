@@ -1,0 +1,20 @@
+LAYER 
+  NAME lakes
+  METADATA
+    "wms_title" "lakes"
+  END
+  STATUS ON
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+  PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+  DATA "geom from lakes_table" # SQL SELECT Statement
+  CLASS
+    NAME "湖沼"
+    STYLE
+      COLOR 128 128 255
+      # ANTIALIAS true
+    END # End of STYLE
+  END # End of CLASS
+END # End of LAYER
+

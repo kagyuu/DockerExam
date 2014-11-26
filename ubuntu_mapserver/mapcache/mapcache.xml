@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapcache>
+   <cache name="disk" type="disk">
+      <base>/tmp</base>
+      <symlink_blank/>
+   </cache>
+   <cache name="memcache" type="memcache">
+     <server>
+       <host>localhost</host>
+       <port>11211</port>
+     </server>
+   </cache>
+   
+   <source name="vmap0" type="wms">
+      <getmap>
+         <params>
+           <MAP>/opt/maps/map07.map</MAP>
+           <LAYERS>countries,rivers,lakes,roads,rails,cities</LAYERS>
+         </params>
+      </getmap>
+      
+      <http>
+         <url>http://app.example.com/cgi-bin/mapserver</url>
+         <headers>
+           <User-Agent>mod_mapcache</User-Agent>
+         </headers>
+      </http>
+   </source>
+   
+   <tileset name="test">
+      <source>vmap0</source>
+      <cache>memcache</cache>
+      <grid>WGS84</grid>
+      <format>PNG</format>
+      <metatile>5 5</metatile>
+      <metabuffer>10</metabuffer>
+      <expires>3600</expires>
+   </tileset>
+
+   <default_format>PNG</default_format>
+
+   <service type="wms" enabled="true">
+      <full_wms>assemble</full_wms>
+      <resample_mode>bilinear</resample_mode>
+      <format>PNG</format>
+      <maxsize>4096</maxsize>
+   </service>
+   <service type="wmts" enabled="true"/>
+   <service type="tms" enabled="true"/>
+   <service type="kml" enabled="true"/>
+   <service type="gmaps" enabled="true"/>
+   <service type="ve" enabled="true"/>
+   <service type="mapguide" enabled="true"/>
+   <service type="demo" enabled="true"/>
+
+   <errors>report</errors>
+   <lock_dir>/tmp</lock_dir>
+   <log_level>debug</log_level>
+</mapcache>

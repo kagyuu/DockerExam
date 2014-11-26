@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <meta charset="UTF-8"/>
+  <title>Openlayers Example</title>
+  <style type="text/css">
+    body {
+      padding : 0;
+      margin : 0;
+    }
+    #map {
+    }
+  </style>
+  <body>
+    <div id="map"></div>
+  </body>
+  <script src="OpenLayers.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  var map = null;
+
+  $(window).ready(function(){
+    resize();
+
+    var lon = 140.0;
+    var lat = 35.0;
+    var zoom = 5;
+    map = new OpenLayers.Map('map',{
+      displayProjection: new OpenLayers.Projection("EPSG:4326")
+    });
+    var localWMS = new OpenLayers.Layer.WMS(
+      "Local WMS layers",
+      "http://app.example.com/mapcache/?",
+      {layers: 'test'},
+      {isBaseLayer: true,
+       units:"dd", 
+       maxExtent: new OpenLayers.Bounds(-180,-90,180,90),
+       projection: new OpenLayers.Projection("EPSG:4326")
+      }
+    );
+    map.addLayer(localWMS);
+    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+    $(window).resize(function(){
+      resize();
+    });
+  });
+
+  var resizeTimerId = null;
+  function resize() {
+    if (resizeTimerId) {
+      clearTimeout(resizeTimerId);
+    }
+    resizeTimerId = setTimeout(function(){
+ 
+      var $window = $(window);
+      $('#map').css({
+        width : $window.width(),
+        height : $window.height()
+      });
+    
+      if (map) {
+        map.updateSize();
+      }
+    },200);
+  }
+  </script>
+</html>

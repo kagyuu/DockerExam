@@ -1,0 +1,69 @@
+SYMBOL
+  NAME "circle"
+  TYPE ellipse
+  FILLED true
+  POINTS
+    3 3
+  END # End of POINTS
+END # End of SYMBOL
+
+LAYER    
+  NAME cities
+  METADATA
+    "wms_title" cities
+  END
+  STATUS ON
+  TYPE POINT
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+  PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+  DATA "geom from city_table" # SQL SELECT Statement
+  LABELITEM "name"
+  CLASS
+    NAME "主要都市"
+    EXPRESSION ([scalerank] < 1)
+    STYLE
+      SYMBOL "circle"
+      COLOR 255 102 0
+    END # End of STYLE
+    LABEL
+      TYPE TRUETYPE
+      FONT ipa_gothic
+      SIZE 10
+      COLOR 0 0 0
+      OUTLINECOLOR 255 255 255
+      SHADOWCOLOR 255 0 0
+      SHADOWSIZE 1 1
+      FORCE true
+      POSITION auto
+    END # End of LABEL
+  END # End of CLASS
+  CLASS
+    NAME "大都市"
+    EXPRESSION ([scalerank] < 3)
+    MAXSCALE 40000000
+    STYLE
+      SYMBOL "circle"
+      COLOR 255 64 64
+    END # End of STYLE
+    LABEL
+      TYPE TRUETYPE
+      FONT ipa_gothic
+      SIZE 10
+      COLOR 0 0 0
+      OUTLINECOLOR 255 255 255
+      SHADOWCOLOR 255 0 0
+      SHADOWSIZE 1 1
+      FORCE true
+      POSITION auto
+    END # End of LABEL
+  END # End of CLASS 
+  CLASS
+    NAME "人工密集地帯"
+    STYLE
+      SYMBOL "circle"
+      COLOR 255 255 128
+    END # End of STYLE
+  END # End of CLASS
+END # End of LAYER
+

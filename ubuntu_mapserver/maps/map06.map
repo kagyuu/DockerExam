@@ -1,0 +1,58 @@
+MAP
+  CONFIG "MS_ERRORFILE" "/tmp/mapserver.log"
+  IMAGETYPE PNG
+  EXTENT -180 -90 180 90 # <Lower Left X> <Lower Left Y> <Upper Right X> <Upper Right Y>
+  SIZE   640 320
+  IMAGECOLOR 128 128 192
+  FONTSET "/opt/maps/fonts.list"
+  UNITS dd
+
+  # WEB
+  WEB
+    TEMPLATE "/opt/maps/template06.html"
+    IMAGEPATH "/var/www/html/tmp/"
+    IMAGEURL "/tmp/"
+    MINSCALEDENOM 200
+    MAXSCALEDENOM 177732952
+  END
+
+  # SCALE BAR
+  SCALEBAR
+    UNITS kilometers
+    BACKGROUNDCOLOR 255 128 128
+    COLOR 0 0 0
+    TRANSPARENT on
+    STYLE 0
+    STATUS embed
+    LABEL
+      COLOR 0 0 0
+      SIZE tiny
+    END # End of LABEL
+  END # End of SCALEBAR
+  
+  LEGEND
+    KEYSIZE 40 20
+    KEYSPACING 10 10 
+    OUTLINECOLOR 0 0 0
+    IMAGECOLOR 255 255 255
+    STATUS ON
+    LABEL
+      TYPE TRUETYPE
+      FONT ipa_gothic
+      COLOR 0 0 0
+      SIZE 12
+      POSITION CL
+      PARTIALS FALSE
+      BUFFER 3
+    END # End of LABEL
+  END # End of LEGEND
+
+  INCLUDE "map06_countries.map"
+  INCLUDE "map06_lakes.map"
+  INCLUDE "map06_rivers.map"
+  INCLUDE "map06_cities.map"
+  INCLUDE "map06_roads.map"
+  INCLUDE "map06_rails.map"
+  INCLUDE "map06_earthquakes.map"
+ 
+END # End of Map

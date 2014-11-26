@@ -1,0 +1,36 @@
+MAP
+  IMAGETYPE PNG
+  EXTENT -180 -90 180 90 # <Lower Left X> <Lower Left Y> <Upper Right X> <Upper Right Y>
+  SIZE   640 320
+  IMAGECOLOR 128 128 192
+  FONTSET "/opt/maps/fonts.list"
+  UNITS dd
+
+  PROJECTION
+    "init=epsg:4326"
+  END
+
+  # WEB
+  WEB
+    TEMPLATE "/opt/maps/template06.html"
+    IMAGEPATH "/var/www/html/tmp/"
+    IMAGEURL "/tmp/"
+    MINSCALEDENOM 200
+    MAXSCALEDENOM 177732952
+    METADATA
+      "wms_title"          "MapServer Tutorial"
+      "wms_onlineresource" "http://app.example.com/cgi-bin/mapserver?map=/opt/maps/map07.map"
+      "wms_srs"            "EPSG:4326"
+      "wms_abstract"       "Cities are joint point of rivers and road and railroads"
+      "wms_enable_request" "*"
+    END # End of METADATA
+  END # End of WEB
+
+  INCLUDE "map06_countries.map"
+  INCLUDE "map06_lakes.map"
+  INCLUDE "map06_rivers.map"
+  INCLUDE "map06_cities.map"
+  INCLUDE "map06_roads.map"
+  INCLUDE "map06_rails.map"
+
+END # End of Map

@@ -1,0 +1,62 @@
+MAP
+  IMAGETYPE PNG
+  EXTENT -180 -90 180 90 # <Lower Left X> <Lower Left Y> <Upper Right X> <Upper Right Y>
+  SIZE   640 320
+  IMAGECOLOR 128 128 192
+
+  # CIRCLE SYMBOL
+  SYMBOL
+    NAME "circle"
+    TYPE ellipse
+    FILLED true
+    POINTS
+      3 3
+    END # End of POINTS
+  END # End of SYMBOL
+
+  LAYER 
+    NAME countries
+    STATUS DEFAULT
+    TYPE POLYGON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+    PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+    DATA "geom from countries_table" # SQL SELECT Statement
+    CLASS
+      STYLE
+        COLOR 255 255 255
+        ANTIALIAS true
+      END # End of STYLE
+    END # End of CLASS
+  END # End of LAYER
+
+  LAYER 
+    NAME cities
+    STATUS DEFAULT
+    TYPE POINT
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+    PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+    DATA "geom from city_table" # SQL SELECT Statement
+    CLASS
+      EXPRESSION ([scalerank] < 3)
+      STYLE
+        SYMBOL "circle"
+        COLOR 255 102 0
+      END # End of STYLE
+    END # End of CLASS
+    CLASS
+      EXPRESSION ([scalerank] < 6)
+      STYLE
+        SYMBOL "circle"
+        COLOR 255 204 0
+      END # End of STYLE
+    END # End of CLASS
+    CLASS
+      STYLE
+        SYMBOL "circle"
+        COLOR 255 255 153 
+      END # End of STYLE
+    END # End of CLASS
+  END # End of LAYER
+END # End of Map

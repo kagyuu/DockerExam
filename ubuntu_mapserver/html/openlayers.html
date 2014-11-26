@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <meta charset="UTF-8"/>
+  <title>Openlayers Example</title>
+  <style type="text/css">
+    #map {
+      width  : 800px;
+      height : 480px;
+      border : 1px solid black;
+    }
+  </style>
+  <body>
+    <div id="map"></div>
+  </body>
+  <script src="OpenLayers.js"></script>
+  <script type="text/javascript">
+    var lon = 140.0;
+    var lat = 35.0;
+    var zoom = 5;
+    var map = new OpenLayers.Map('map');
+    var baseWMS = new OpenLayers.Layer.WMS(
+      "Base Map",
+      "http://app.example.com/cgi-bin/mapserver?map=/opt/maps/map07.map",
+      {layers: ['countries','lakes','rivers','cities','roads','rails'], transparent: false},
+      {isBaseLayer: true, wrapDateLine: true}
+    );
+    var earthQuakeWMS3 = new OpenLayers.Layer.WMS(
+      "Mag3",
+      "http://app.example.com/cgi-bin/mapserver?map=/opt/maps/map07_earthquakes.map&magx=3&magy=4",
+      {layers: ['earthquakes'], transparent: true},
+      {isBaseLayer: false, visibility: false, wrapDateLine: true}
+    );
+    var earthQuakeWMS4 = new OpenLayers.Layer.WMS(
+      "Mag4",
+      "http://app.example.com/cgi-bin/mapserver?map=/opt/maps/map07_earthquakes.map&magx=4&magy=5",
+      {layers: ['earthquakes'], transparent: true},
+      {isBaseLayer: false, visibility: false, wrapDateLine: true}
+    );
+    var earthQuakeWMS5 = new OpenLayers.Layer.WMS(
+      "Mag5",
+      "http://app.example.com/cgi-bin/mapserver?map=/opt/maps/map07_earthquakes.map&magx=5&magy=6",
+      {layers: ['earthquakes'], transparent: true},
+      {isBaseLayer: false, visibility: false, wrapDateLine: true}
+    );
+    var earthQuakeWMS6 = new OpenLayers.Layer.WMS(
+      "Mag6",
+      "http://app.example.com/cgi-bin/mapserver?map=/opt/maps/map07_earthquakes.map&magx=6&magy=7",
+      {layers: ['earthquakes'], transparent: true},
+      {isBaseLayer: false, wrapDateLine: true}
+    );
+    var earthQuakeWMS7 = new OpenLayers.Layer.WMS(
+      "Mag7",
+      "http://app.example.com/cgi-bin/mapserver?map=/opt/maps/map07_earthquakes.map&magx=7&magy=9",
+      {layers: ['earthquakes'], transparent: true},
+      {isBaseLayer: false, wrapDateLine: true}
+    );
+    map.addLayer(baseWMS);
+    map.addLayer(earthQuakeWMS3);
+    map.addLayer(earthQuakeWMS4);
+    map.addLayer(earthQuakeWMS5);
+    map.addLayer(earthQuakeWMS6);
+    map.addLayer(earthQuakeWMS7);
+    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+  </script>
+</html>

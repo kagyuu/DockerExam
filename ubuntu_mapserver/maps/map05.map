@@ -1,0 +1,132 @@
+MAP
+  IMAGETYPE PNG
+  EXTENT -180 -90 180 90 # <Lower Left X> <Lower Left Y> <Upper Right X> <Upper Right Y>
+  SIZE   640 320
+  IMAGECOLOR 128 128 192
+  FONTSET "/opt/maps/fonts.list"
+  UNITS dd
+
+  # WEB
+  WEB
+    TEMPLATE "/opt/maps/template05.html"
+    IMAGEPATH "/var/www/html/tmp/"
+    IMAGEURL "/tmp/"
+    MINSCALEDENOM 200
+    MAXSCALEDENOM 177732952
+  END
+
+  # SCALE BAR
+  SCALEBAR
+    UNITS kilometers
+    BACKGROUNDCOLOR 255 128 128
+    COLOR 0 0 0
+    TRANSPARENT on
+    STYLE 0
+    STATUS embed
+    LABEL
+      COLOR 0 0 0
+      SIZE tiny
+    END # End of LABEL
+  END # End of SCALEBAR
+  
+  LEGEND
+    KEYSIZE 40 20
+    KEYSPACING 10 10 
+    OUTLINECOLOR 0 0 0
+    IMAGECOLOR 220 220 255
+    STATUS ON
+    LABEL
+      TYPE TRUETYPE
+      FONT ipa_gothic
+      COLOR 0 0 0
+      SIZE 12
+      POSITION CL
+      PARTIALS FALSE
+      BUFFER 3
+    END # End of LABEL
+  END # End of LEGEND
+
+  # CIRCLE SYMBOL
+  SYMBOL
+    NAME "circle"
+    TYPE ellipse
+    FILLED true
+    POINTS
+      3 3
+    END # End of POINTS
+  END # End of SYMBOL
+
+  LAYER 
+    NAME countries
+    STATUS DEFAULT
+    TYPE POLYGON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+    PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+    DATA "geom from countries_table" # SQL SELECT Statement
+    CLASS
+      NAME "LAND"
+      STYLE
+        COLOR 255 255 255
+        ANTIALIAS true
+      END # End of STYLE
+    END # End of CLASS
+  END # End of LAYER
+
+  LAYER 
+    NAME cities
+    STATUS DEFAULT
+    TYPE POINT
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+    PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+    DATA "geom from city_table" # SQL SELECT Statement
+    LABELITEM "name"
+    CLASS
+      NAME "LARGE CITY"
+      EXPRESSION ([scalerank] < 1)
+      STYLE
+        SYMBOL "circle"
+        COLOR 255 102 0
+      END # End of STYLE
+      LABEL
+        TYPE TRUETYPE
+        FONT ipa_gothic
+        SIZE 10
+        COLOR 0 0 0
+        OUTLINECOLOR 255 255 255
+        SHADOWCOLOR 255 0 0
+        SHADOWSIZE 1 1
+        FORCE true
+        POSITION auto
+      END # End of LABEL
+    END # End of CLASS
+    CLASS
+      NAME "BIG CITY"
+      EXPRESSION ([scalerank] < 3)
+      MAXSCALE 45000000
+      STYLE
+        SYMBOL "circle"
+        COLOR 255 102 0
+      END # End of STYLE
+      LABEL
+        TYPE TRUETYPE
+        FONT ipa_gothic
+        SIZE 10
+        COLOR 0 0 0
+        OUTLINECOLOR 255 255 255
+        SHADOWCOLOR 255 0 0
+        SHADOWSIZE 1 1
+        FORCE true
+        POSITION auto
+      END # End of LABEL
+    END # End of CLASS 
+    CLASS
+      NAME "CITY"
+      STYLE
+        SYMBOL "circle"
+        COLOR 255 255 153 
+      END # End of STYLE
+    END # End of CLASS
+  END # End of LAYER
+END # End of Map

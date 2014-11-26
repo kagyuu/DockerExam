@@ -1,0 +1,20 @@
+LAYER
+  NAME countries
+  METADATA
+    "wms_title" "countries"
+  END
+  STATUS DEFAULT
+  TYPE POLYGON
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+  PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+  DATA "geom from countries_table" # SQL SELECT Statement
+  CLASS
+    NAME "陸地"
+    STYLE
+      COLOR 255 255 255
+      ANTIALIAS true
+    END # End of STYLE
+  END # End of CLASS
+END # End of LAYER
+

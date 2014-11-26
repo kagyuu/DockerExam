@@ -1,0 +1,21 @@
+MAP
+  IMAGETYPE PNG
+  EXTENT -180 -90 180 90 # <Lower Left X> <Lower Left Y> <Upper Right X> <Upper Right Y>
+  SIZE   640 320
+  IMAGECOLOR 128 128 192
+
+  LAYER 
+    NAME countries
+    STATUS DEFAULT
+    TYPE POLYGON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+    DATA "geom from countries_table" # SQL SELECT Statement
+    CLASS
+      STYLE
+        COLOR 255 255 255
+        ANTIALIAS true
+      END # End of STYLE
+    END # End of CLASS
+  END # End of LAYER
+END # End of MAP

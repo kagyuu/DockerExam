@@ -1,0 +1,22 @@
+LAYER
+  NAME rails
+  METADATA
+    "wms_title" "rails"
+  END
+  STATUS ON
+  TYPE LINE
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+  PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+  DATA "geom from railroads_table" # SQL SELECT Statement
+  CLASS
+    NAME "鉄道"
+    EXPRESSION ([scalerank] < 6)
+    STYLE
+      WIDTH 1
+      ANTIALIAS TRUE
+      COLOR 0 255 0
+      OUTLINECOLOR 0 0 0
+    END # End of STYLE
+  END # End of CLASS
+END # End of LAYER

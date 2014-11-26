@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <meta charset="UTF-8"/>
+  <title>Openlayers Example</title>
+  <style type="text/css">
+    #map {
+      width  : 800px;
+      height : 500px;
+      border : 1px solid black;
+    }
+  </style>
+  <body>
+    <div id="map"></div>
+  </body>
+  <script src="OpenLayers.js"></script>
+  <script type="text/javascript">
+    var lon = 140.0;
+    var lat = 35.0;
+    var zoom = 5;
+    var map = new OpenLayers.Map('map',{
+      displayProjection: new OpenLayers.Projection("EPSG:4326")
+    });
+    var localWMS = new OpenLayers.Layer.WMS(
+      "Local WMS layers",
+      "http://app.example.com/mapcache/?",
+      {layers: 'test'},
+      {isBaseLayer: true,
+       units:"dd", 
+       maxExtent: new OpenLayers.Bounds(-180,-90,180,90),
+       projection: new OpenLayers.Projection("EPSG:4326")
+      }
+    );
+    map.addLayer(localWMS);
+    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+  </script>
+</html>

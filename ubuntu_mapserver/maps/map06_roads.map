@@ -1,0 +1,22 @@
+LAYER
+  NAME roads
+  METADATA
+    "wms_title" "roads"
+  END
+  STATUS ON
+  TYPE LINE
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+  PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+  DATA "geom from roads_table" # SQL SELECT Statement
+  CLASS
+    NAME "道路"
+    EXPRESSION ([scalerank] < 5)
+    STYLE
+      WIDTH 1
+      ANTIALIAS TRUE
+      COLOR 255 128 128
+      OUTLINECOLOR 0 0 0
+    END # End of STYLE
+  END # End of CLASS
+END # End of LAYER

@@ -1,0 +1,33 @@
+<!-- MapServer Template -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Map Example</title>
+</head>
+<body>
+  <form name="mapserv" method="GET" action="/cgi-bin/mapserver">
+    <input type="hidden" name="map" value="[map]"/>
+    <input type="hidden" name="imgext" value="[mapext]"/>
+    <div>
+      <select name="mode">
+        <option value="browse">browser</option>
+        <option value="map">map</option>
+      </select>
+      <select name="zoom">
+        <option value="4" [zoom_4_select]>x4</option>
+        <option value="3" [zoom_3_select]>x3</option>
+        <option value="2" [zoom_2_select]>x2</option>
+        <option value="1" [zoom_1_select]>x1</option>
+        <option value="-2" [zoom_-2_select]>x-2</option>
+        <option value="-3" [zoom_-3_select]>x-3</option>
+        <option value="-4" [zoom_-4_select]>x-4</option>
+      </select>
+      [scaledenom]
+      <input type="submit" name="submit" value="reset"/>
+    </div>
+    <input type="image" name="img" src="[img]" width="640" height="320"/>
+  </form>
+</body>
+</html>
+

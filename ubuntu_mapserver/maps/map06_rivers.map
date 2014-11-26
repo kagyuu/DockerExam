@@ -1,0 +1,23 @@
+LAYER 
+  NAME rivers
+  METADATA
+    "wms_title" "rivers"
+  END
+  STATUS ON
+  TYPE LINE
+  CONNECTIONTYPE POSTGIS
+  CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+  PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
+  DATA "geom from rivers_table" # SQL SELECT Statement
+  LABELITEM "name"
+  CLASS
+    NAME "河川"
+    EXPRESSION ([scalerank] < 5)
+    STYLE
+      WIDTH 1
+      ANTIALIAS TRUE
+      COLOR 128 128 255
+      OUTLINECOLOR 0 0 0
+    END # End of STYLE
+  END # End of CLASS
+END # End of LAYER
