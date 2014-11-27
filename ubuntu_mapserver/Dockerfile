@@ -102,6 +102,11 @@ RUN /etc/init.d/postgresql start &&\
     su docker -c "psql -d docker -f earth.sql" &&\
     /etc/init.d/postgresql stop
 
+# temporary direcotry to store map graphic files
+RUN mkdir /var/www/html/tmp
+RUN chown www-data /var/www/html/tmp
+RUN chmod 755 /var/www/html/tmp
+
 ## Monit
 ADD postgresql.conf /etc/monit/conf.d/postgresql.conf
 ADD apache2.conf /etc/monit/conf.d/apache2.conf

@@ -6,7 +6,7 @@ LAYER
   STATUS ON
   TYPE LINE
   CONNECTIONTYPE POSTGIS
-  CONNECTION "host=localhost port=5432 dbname=demo user=postgres password=postgres"
+  CONNECTION "host=localhost port=5432 dbname=docker user=docker password=docker"
   PROCESSING "CLOSE_CONNECTION=DEFER" # DB CONNECTION POOL
   DATA "geom from rivers_table" # SQL SELECT Statement
   LABELITEM "name"

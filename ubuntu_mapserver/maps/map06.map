@@ -53,6 +53,5 @@ MAP
   INCLUDE "map06_cities.map"
   INCLUDE "map06_roads.map"
   INCLUDE "map06_rails.map"
-  INCLUDE "map06_earthquakes.map"
  
 END # End of Map
