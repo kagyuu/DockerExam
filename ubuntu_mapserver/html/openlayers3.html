@@ -1,68 +1,44 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <meta charset="UTF-8"/>
-  <title>Openlayers Example</title>
-  <style type="text/css">
-    body {
-      padding : 0;
-      margin : 0;
-    }
-    #map {
-    }
-  </style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.0.0/css/ol.css" type="text/css">
+    <style>
+      .map {
+        height : 480px;
+        width  : 800px;
+        border : 1px solid black;
+      }
+    </style>
+    <script src="http://openlayers.org/en/v3.0.0/build/ol.js" type="text/javascript"></script>
+    <title>OpenLayers 3 example</title>
+  </head>
   <body>
-    <div id="map"></div>
-  </body>
-  <script src="OpenLayers.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script type="text/javascript">
-  var map = null;
+    <h2>My Map</h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+      var layers = [
+        new ol.layer.Image({
+          source : new ol.source.ImageWMS({
+            url : '/cgi-bin/mapserv?map=/opt/maps/map07.map',
+            params: {
+              // these are simply added to http-get parameter
+              'LAYERS' : 'countries,lakes,rivers,cities,roads,rails',
+              'TRANSPARENT' : 'FALSE'
+            },
+          })
+        })
+      ];
 
-  $(window).ready(function(){
-    resize();
-
-    var lon = 140.0;
-    var lat = 35.0;
-    var zoom = 5;
-    map = new OpenLayers.Map('map',{
-      displayProjection: new OpenLayers.Projection("EPSG:4326")
-    });
-    var localWMS = new OpenLayers.Layer.WMS(
-      "Local WMS layers",
-      "http://app.example.com/mapcache/?",
-      {layers: 'test'},
-      {isBaseLayer: true,
-       units:"dd", 
-       maxExtent: new OpenLayers.Bounds(-180,-90,180,90),
-       projection: new OpenLayers.Projection("EPSG:4326")
-      }
-    );
-    map.addLayer(localWMS);
-    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
-
-    $(window).resize(function(){
-      resize();
-    });
-  });
-
-  var resizeTimerId = null;
-  function resize() {
-    if (resizeTimerId) {
-      clearTimeout(resizeTimerId);
-    }
-    resizeTimerId = setTimeout(function(){
- 
-      var $window = $(window);
-      $('#map').css({
-        width : $window.width(),
-        height : $window.height()
+      var map = new ol.Map({
+        target: 'map',
+        layers : layers,
+        view: new ol.View({
+          projection: 'EPSG:4326',
+          center: [135, 40],
+          zoom: 4
+        })
       });
-    
-      if (map) {
-        map.updateSize();
-      }
-    },200);
-  }
-  </script>
+    </script>
+  </body>
 </html>
+
