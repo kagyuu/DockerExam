@@ -213,7 +213,6 @@ ADD nginx.conf /etc/monit/conf.d/nginx.conf
 ADD postfix.conf /etc/monit/conf.d/poxtfix.conf
 ADD postgresql.conf /etc/monit/conf.d/postgresql.conf
 ADD redis.conf /etc/monit/conf.d/redis.conf
-ADD rsyslog.conf /etc/monit/conf.d/rsyslog.conf
 
 ## Expose ports
 # 2812  : monit

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t wafull/gitlab ./
+docker build -t atsushi/gitlab ./
