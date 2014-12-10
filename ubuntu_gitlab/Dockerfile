@@ -19,52 +19,17 @@
 # Each line is commit as layer of Unit FS. Caution, max layer is 127.
  
 # Pull base image.
-FROM ubuntu
+FROM atsushi/ubuntu_monit_ssh
 
-## Proxy
-# ENV http_proxy http://foo%40bar.com:password@proxy.bar.com:3124/
-# ENV https_proxy http://foo%40bar.com:password@proxy.bar.com:3124/
 MAINTAINER Atsushi HONDOH <kagyuu@hondou.homedns.org>
  
 ENV TERM dumb 
 
-## 0. Install ssh and monit
-
-RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y openssh-server monit
-
-RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
-RUN mkdir -p /var/run/sshd && chmod 755 /var/run/sshd
-
-# Operator user
-RUN addgroup wheel
-RUN useradd -m -G wheel -s /bin/bash docker
-RUN echo docker:password | chpasswd
-
-# Setup sudoers
-RUN echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
- 
-# Setup SSH
-RUN mkdir /home/docker/.ssh
-ADD authorized_keys /home/docker/.ssh/authorized_keys
-RUN chown -R docker:docker /home/docker/.ssh/
-RUN chmod 701 /home/docker
-RUN chmod 700 /home/docker/.ssh
-RUN chmod 600 /home/docker/.ssh/authorized_keys
-
-# root
-ADD authorized_keys /root/.ssh/authorized_keys
-RUN chmod -R g-rwx,o-rwx /root/.ssh
-
-# Setup Monit
-ADD monit.conf /etc/monit/conf.d/monit.conf
-ADD ssh.conf /etc/monit/conf.d/ssh.conf
-
 ## 1. Packages / Dependencies
 
 # run as root!
-# RUN apt-get update -y
-# RUN apt-get upgrade -y
+RUN apt-get update -y
+RUN apt-get upgrade -y
 RUN apt-get install -y sudo \
 vim \
 build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake \
@@ -78,8 +43,8 @@ RUN update-alternatives --set editor /usr/bin/vim.basic
 RUN sudo apt-get remove ruby*
 
 RUN mkdir /tmp/ruby && cd /tmp/ruby &&\
-curl -L --progress http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz &&\
-cd ruby-2.1.2 &&\
+curl -L --progress http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz | tar xz &&\
+cd ruby-2.1.5 &&\
 ./configure --disable-install-rdoc &&\
 make &&\
 make install
@@ -88,12 +53,21 @@ RUN gem install bundler --no-ri --no-rdoc
 
 ## 3. System Users
 
+RUN apt-get -y install pwgen
 RUN adduser --disabled-login --gecos 'GitLab' git
+
+# unlock to enable ssh access, password is random 128 chars.
+RUN echo git:`pwgen 128 1` | chpasswd
+RUN passwd -u git
 
 ## 4. Database
 
 # Install the database packages
 RUN apt-get install -y postgresql postgresql-client libpq-dev
+
+# make encoding UTF-8 (default is damn SQL_ASCII)
+RUN pg_dropcluster --stop 9.4 main
+RUN pg_createcluster --start -e UTF-8 9.4 main
 
 RUN /etc/init.d/postgresql start &&\
 sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;" &&\
@@ -106,7 +80,23 @@ RUN apt-get install redis-server
 
 # Configure redis to use sockets
 RUN cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
-RUN sed -e 's/^# unixsocket /unixsocket /' -e 's/^port .*/port 0/' /etc/redis/redis.conf.orig | tee /etc/redis/redis.conf
+
+# Disable Redis listening on TCP by setting 'port' to 0
+RUN sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+
+# Enable Redis socket for default Debian / Ubuntu path
+RUN echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
+# Grant permission to the socket to all members of the redis group
+RUN echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
+
+# Create the directory which contains the socket
+RUN mkdir /var/run/redis
+RUN chown redis:redis /var/run/redis
+RUN chmod 755 /var/run/redis
+# Persist the directory which contains the socket, if applicable
+#if [ -d /etc/tmpfiles.d ]; then
+#echo 'd  /var/run/redis  0755  redis  redis  10d  -' | sudo tee -a /etc/tmpfiles.d/redis.conf
+#fi
 
 # Activate the changes to redis.conf
 RUN /etc/init.d/redis-server start &&\
@@ -125,7 +115,7 @@ RUN usermod -aG redis git
 
 WORKDIR /home/git
 USER git
-RUN git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-3-stable gitlab
+RUN git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-5-stable gitlab
 
 # Go to GitLab installation folder
 WORKDIR /home/git/gitlab
@@ -169,7 +159,7 @@ RUN chmod o-rwx config/database.yml
 # Install Gems
 RUN bundle install --deployment --without development test mysql aws
 
-RUN bundle exec rake gitlab:shell:install[v2.0.0] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+RUN bundle exec rake gitlab:shell:install[v2.2.0] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
 USER root
 
@@ -202,12 +192,20 @@ RUN /etc/init.d/postgresql start &&\
  /etc/init.d/postgresql stop
 
 ## 7. Nginx
-
-RUN apt-get install -y nginx
+RUN apt-get install -y nginx openssl
 
 RUN cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
 RUN ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 RUN rm /etc/nginx/sites-enabled/default
+
+# disable IPv6
+RUN sed -ri 's/listen \[::\]:80/#listen [::]:80/g' /etc/nginx/sites-available/default
+RUN sed -ri 's/listen \[::\]:80/#listen [::]:80/g' /etc/nginx/sites-available/gitlab
+
+## 8. HTTPS
+#RUN mkdir -p /etc/nginx/ssl/
+#ADD gitlab.key /etc/nginx/ssl/gitlab.key
+#ADD gitlab.crt /etc/nginx/ssl/gitlab.crt
 
 ## init scripts
 ADD gitlab.conf /etc/monit/conf.d/gitlab.conf
@@ -215,6 +213,7 @@ ADD nginx.conf /etc/monit/conf.d/nginx.conf
 ADD postfix.conf /etc/monit/conf.d/poxtfix.conf
 ADD postgresql.conf /etc/monit/conf.d/postgresql.conf
 ADD redis.conf /etc/monit/conf.d/redis.conf
+ADD rsyslog.conf /etc/monit/conf.d/rsyslog.conf
 
 ## Expose ports
 # 2812  : monit
@@ -222,5 +221,6 @@ ADD redis.conf /etc/monit/conf.d/redis.conf
 # 22 : ssh
 EXPOSE 22 80 2812
 
-## Execute monit
-CMD ["/usr/bin/monit","-I"]
+## VOLUME
+VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql","/var/lib/redis","/home/git"]
+
