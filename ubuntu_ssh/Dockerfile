@@ -29,7 +29,7 @@ MAINTAINER Atsushi HONDOH <kagyuu@hondou.homedns.org>
 
 ## Install ssh and monit
 RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y openssh-server monit
+RUN apt-get install -y openssh-server rsyslog monit
 
 # Initialize sshd
 RUN /etc/init.d/ssh start && /etc/init.d/ssh stop
@@ -60,6 +60,7 @@ RUN chmod 600 /home/docker/.ssh/authorized_keys
 ## Setup Monit
 ADD monit.conf /etc/monit/conf.d/monit.conf
 ADD ssh.conf /etc/monit/conf.d/ssh.conf
+ADD rsyslog.conf /etc/monit/conf.d/rsyslog.conf
  
 ## Expose ports
 # 22    : ssh

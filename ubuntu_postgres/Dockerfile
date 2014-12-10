@@ -29,6 +29,10 @@ RUN apt-get -y update && apt-get -y upgrade
 # "--force-yes" because pgsql is beta version
 RUN apt-get -y --force-yes install postgresql
 
+# make encoding UTF-8 (default is damn SQL_ASCII)
+RUN pg_dropcluster --stop 9.4 main
+RUN pg_createcluster --start -e UTF-8 9.4 main
+
 # make docker super-use of postgresql
 USER postgres
 RUN /etc/init.d/postgresql start &&\
