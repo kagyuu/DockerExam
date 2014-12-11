@@ -222,4 +222,3 @@ EXPOSE 22 80 2812
 
 ## VOLUME
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql","/var/lib/redis","/home/git"]
-
