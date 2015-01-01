@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# description: portforward localhost:5432 to pgsql docker container
+#
+# pidfile: /var/run/socat_pgsql_forward.pid
+
+pidfilename=`basename ${0}`
+pidfile=/var/run/${pidfilename}.pid
+cmdline="/usr/bin/socat TCP4-LISTEN:5432,fork TCP4:${PGSQL_PORT_5432_TCP_ADDR}:${PGSQL_PORT_5432_TCP_PORT}"
+
+env > /tmp/env
+
+RETVAL=0
+start(){
+    echo -n "Start $cmdline"
+    daemon --pidfile=${pidfile} $cmdline
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+      pgrep -f "$cmdline" > $pidfile
+      echo "...done"
+    else
+      echo "...fail"
+    fi
+    return $RETVAL
+} 
+
+stop() {
+    logger log "Stop $cmdline"
+    while read pid
+    do
+      kill $pid
+    done < $pidfile
+    rm -f $pidfile
+    return $RETVAL
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        restart
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart}"
+        exit 2
+esac
+
+exit $?
+

@@ -62,9 +62,15 @@ RUN ./asadmin start-domain &&\
 RUN wget http://jdbc.postgresql.org/download/postgresql-9.3-1102.jdbc41.jar -P /tmp
 RUN mv /tmp/postgresql-9.3-1102.jdbc41.jar /opt/glassfish4/glassfish/domains/domain1/lib/ext
 
+# Ambassador
+RUN apt-get -y install socat daemon
+
 # MEMO: To get the MySQL Connector/J needs an Oracle web account.
  
 ADD glassfish.conf /etc/monit/conf.d/glassfish.conf
+ADD socat_pgsql /etc/init.d/socat_pgsql
+RUN chmod +x /etc/init.d/socat_pgsql
+ADD socat_pgsql.conf /etc/monit/conf.d/socat_pgsql.conf
 
 ## Expose ports
 # 4848 : glassfish Management Console
