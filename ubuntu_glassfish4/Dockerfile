@@ -46,16 +46,12 @@ RUN ./asadmin start-domain &&\
   " &&\
   ./asadmin stop-domain
 
+RUN echo "AS_ADMIN_PASSWORD=1qazse4" > passwordfile
+RUN chmod 600 ./passwordfile
 
 # Enable admin console via web interface form remote PCs.
 RUN ./asadmin start-domain &&\
-  expect -c "\
-    set timeout 20;\
-    spawn ./asadmin enable-secure-admin;\
-    expect \"Enter admin user name>  \"; send \"admin\r\";\
-    expect \"Enter admin password for user \\"admin\\">  \"; send \"1qazse4\r\";\
-    expect eof;\
-  " &&\
+  ./asadmin enable-secure-admin --user admin --passwordfile=./passwordfile &&\
   ./asadmin stop-domain
 
 # Postgresql JDBC Driver
