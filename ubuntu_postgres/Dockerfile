@@ -27,7 +27,7 @@ MAINTAINER Atsushi HONDOH <kagyuu@hondou.homedns.org>
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ utopic-pgdg main 9.4" > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get -y update && apt-get -y upgrade
 # "--force-yes" because pgsql is beta version
-RUN apt-get -y --force-yes install postgresql
+RUN apt-get -y --force-yes install postgresql postgresql-contrib-9.4
 
 # make encoding UTF-8 (default is damn SQL_ASCII)
 RUN pg_dropcluster --stop 9.4 main
