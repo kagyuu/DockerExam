@@ -20,7 +20,7 @@ MAP
     METADATA
       "wms_title"          "MapServer Tutorial"
       "wms_onlineresource" "/cgi-bin/mapserver?map=/opt/maps/map07.map"
-      "wms_srs"            "EPSG:4326"
+      "wms_srs"            "EPSG:4326 EPSG:3857"
       "wms_abstract"       "Cities are joint point of rivers and road and railroads"
       "wms_enable_request" "*"
     END # End of METADATA

@@ -19,10 +19,10 @@
       var layers = [
         new ol.layer.Image({
           source : new ol.source.ImageWMS({
-            url : '/cgi-bin/mapserv?map=/opt/maps/map07.map',
+            url : '/mapcache?',
             params: {
               // these are simply added to http-get parameter
-              'LAYERS' : 'countries,lakes,rivers,cities,roads,rails',
+              'LAYERS' : 'test',
               'TRANSPARENT' : 'FALSE'
             },
           })
