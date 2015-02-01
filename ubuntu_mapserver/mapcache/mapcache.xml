@@ -5,13 +5,14 @@
       <base>/tmp</base>
       <symlink_blank/>
    </cache>
+<!--
    <cache name="memcache" type="memcache">
      <server>
        <host>localhost</host>
        <port>11211</port>
      </server>
    </cache>
-   
+-->   
    <source name="vmap0" type="wms">
       <getmap>
          <params>
@@ -21,7 +22,7 @@
       </getmap>
       
       <http>
-         <url>http://app.example.com/cgi-bin/mapserver</url>
+         <url>http://127.0.0.1/cgi-bin/mapserv</url>
          <headers>
            <User-Agent>mod_mapcache</User-Agent>
          </headers>
@@ -30,8 +31,8 @@
    
    <tileset name="test">
       <source>vmap0</source>
-      <cache>memcache</cache>
-      <grid>WGS84</grid>
+      <cache>disk</cache>
+      <grid>GoogleMapsCompatible</grid>
       <format>PNG</format>
       <metatile>5 5</metatile>
       <metabuffer>10</metabuffer>

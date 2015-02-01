@@ -107,6 +107,25 @@ RUN mkdir /var/www/html/tmp
 RUN chown www-data /var/www/html/tmp
 RUN chmod 755 /var/www/html/tmp
 
+## Mapcache
+RUN apt-get -y --force-yes install git cmake gcc g++ \
+apache2-dev \
+libpng12-dev libjpeg62-dev libcurl4-gnutls-dev \
+libpixman-1-dev \
+memcached
+
+RUN git clone git://github.com/mapserver/mapcache.git
+RUN cd mapcache &&\
+mkdir build &&\
+cd build &&\
+cmake .. -DWITH_MEMCACHE=1 -DWITH_OGR=0 -DWITH_FCGI=0 -DWITH_GEOS=0 &&\
+make &&\
+make install
+
+ADD mapcache.conf /etc/apache2/conf-available/mapcache.conf
+RUN ln -s /etc/apache2/conf-available/mapcache.conf /etc/apache2/conf-enabled/mapcache.conf
+RUN mkdir /opt/mapcache
+
 ## Monit
 ADD postgresql.conf /etc/monit/conf.d/postgresql.conf
 ADD apache2.conf /etc/monit/conf.d/apache2.conf
