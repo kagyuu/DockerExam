@@ -13,13 +13,12 @@
     <title>OpenLayers 3 example</title>
   </head>
   <body>
-    <h2>My Map</h2>
     <div id="map" class="map"></div>
     <script type="text/javascript">
       var layers = [
         new ol.layer.Image({
           source : new ol.source.ImageWMS({
-            url : '/mapcache?',
+            url : 'mapcache?',
             params: {
               // these are simply added to http-get parameter
               'LAYERS' : 'test',

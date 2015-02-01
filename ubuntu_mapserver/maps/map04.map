@@ -9,7 +9,7 @@ MAP
   WEB
     TEMPLATE "/opt/maps/template.html"
     IMAGEPATH "/var/www/html/tmp/"
-    IMAGEURL "/tmp/"
+    IMAGEURL "../tmp/"
     MINSCALEDENOM 200
     MAXSCALEDENOM 1600
   END
