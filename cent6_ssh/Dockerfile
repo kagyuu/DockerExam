@@ -29,6 +29,7 @@ MAINTAINER Atsushi HONDOH <kagyuu@hondou.homedns.org>
  
 ## Install monit and sshd
 RUN rpm -ivh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+RUN yum -y install epel-release
 RUN yum -y update
 RUN yum -y install passwd openssh openssh-server openssh-clients sudo monit
 
