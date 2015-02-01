@@ -11,7 +11,7 @@ MAP
   WEB
     TEMPLATE "/opt/maps/template06.html"
     IMAGEPATH "/var/www/html/tmp/"
-    IMAGEURL "/tmp/"
+    IMAGEURL "../tmp/"
     MINSCALEDENOM 200
     MAXSCALEDENOM 177732952
   END

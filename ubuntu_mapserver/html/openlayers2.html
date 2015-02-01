@@ -20,7 +20,7 @@
     var map = new OpenLayers.Map('map');
     var baseWMS = new OpenLayers.Layer.WMS(
       "Base Map",
-      "/cgi-bin/mapserv?map=/opt/maps/map07.map",
+      "cgi-bin/mapserv?map=/opt/maps/map07.map",
       {layers: ['countries','lakes','rivers','cities','roads','rails'], transparent: false},
       {isBaseLayer: true, wrapDateLine: true}
     );
