@@ -29,41 +29,19 @@ MAINTAINER Atsushi HONDOH <kagyuu@hondou.homedns.org>
 
 ## Install nginx
 RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y nginx openssl expect
+RUN apt-get install -y nginx-extras git apache2-utils
 
-# maker nginx interactive mode
+# settings for nginx
+ADD site.conf /etc/nginx/conf.d/site.conf
+ADD docker-registry.conf /etc/nginx/docker-registry.conf
+RUN htpasswd -bc /etc/nginx/docker-registry.htpasswd docker password
+
+RUN rm /etc/nginx/sites-enabled/default
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-# settings for proxy
-run rm /etc/nginx/sites-enabled/default
-add site.conf /etc/nginx/sites-enabled/
+# put crt files
+ADD cert/server-cert.pem /etc/ssl/certs/docker-registry
+ADD cert/server-key.pem /etc/ssl/private/docker-registry
 
-# create crt files
-WORKDIR /tmp
-RUN openssl genrsa -out server.key 2048
-RUN expect -c "\
-  set timeout 20;\
-  spawn openssl req -new -key server.key -out server.csr;\
-  expect -re \"Country Name.*:\"             ; send \"AU\n\";\
-  expect -re \"State or Province Name.*:\"   ; send \"State\n\";\
-  expect -re \"Locality Name.*:\"            ; send \"City\n\";\
-  expect -re \"Organization Name.*:\"        ; send \"Example Co. LTD\n\";\
-  expect -re \"Organizational Unit Name.*:\" ; send \"P.R.\n\";\
-  expect -re \"Common Name.*:\"              ; send \"John Doe\n\";\
-  expect -re \"Email Address.*:\"            ; send \"john@example.com\n\";\
-  expect -re \"A challenge password.*:\"     ; send \"\n\";\
-  expect -re \"An optional company name.*:\" ; send \"\n\";\
-  expect eof;\
-  "
-RUN openssl x509 -req -days 3650 -in server.csr -signkey server.key -out server.crt
-
-RUN mkdir /etc/nginx/certificates/
-RUN mv server.crt /etc/nginx/certificates/
-RUN mv server.key /etc/nginx/certificates/
-
-## EXPOSE
-# 5443  : ssl-proxy for docker registry 
-EXPOSE 5443
- 
-## Execute nginx
+EXPOSE 443
 CMD ["nginx"]
