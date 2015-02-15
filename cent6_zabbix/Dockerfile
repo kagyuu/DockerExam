@@ -62,5 +62,14 @@ ADD zabbix.conf /etc/monit.d/zabbix.conf
 
 ###################
 ## Expose ports
-## 80 : Zabbix
-EXPOSE 80
+## 80 : Zabbix web console
+## 10051 : Zabbix
+EXPOSE 80 10051
+
+###################
+## Volumes
+# /etc/zabbix : setteings for zabbix
+# /var/lib/mysql : mysql data direcoty
+
+VOLUME ["/etc/zabbix","/var/lib/mysql"]
+
