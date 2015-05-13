@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <error file="src/warehouse.cpp" line="22" id="unusedFunction" severity="style" msg="The function &apos;getStock&apos; is never used."/>
+    <error file="src/warehouse.cpp" line="7" id="unusedFunction" severity="style" msg="The function &apos;putGoods&apos; is never used."/>
+    <error file="src/warehouse.cpp" line="11" id="unusedFunction" severity="style" msg="The function &apos;takeGoods&apos; is never used."/>
+    <error id="missingIncludeSystem" severity="style" msg="Cppcheck cannot find all the include files (use --check-config for details)"/>
+</results>
